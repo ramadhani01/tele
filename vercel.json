@@ -1,21 +1,5 @@
 {
-  "functions": {
-    "api/*.js": {
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
-    {
-      "source": "/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/otp",
-      "destination": "/otp.html"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
+    { "source": "/api/login", "destination": "/api/login.js" }
   ]
 }
